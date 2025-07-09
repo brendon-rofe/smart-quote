@@ -9,7 +9,7 @@ class Quote(BaseModel):
   description: str
   price: int
 
-@app.get("/")
+@app.get("/quotes")
 def get_all_quotes():
   return {
     "Message": "This will return all quotes"
