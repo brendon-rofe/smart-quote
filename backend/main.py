@@ -7,16 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import get_db, engine
+from schemas import Quote
 from models import Base, QuoteModel
-
-class Quote(BaseModel):
-    id: int
-    customer: str
-    description: str
-    price: int
-
-    class Config:
-        orm_mode = True
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
