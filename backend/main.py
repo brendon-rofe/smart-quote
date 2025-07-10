@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from contextlib import asynccontextmanager
 from typing import List
 
@@ -53,4 +53,16 @@ async def update_quote(quote_id: int, quote: QuoteUpdate, db: AsyncSession = Dep
   await db.commit()
   await db.refresh(existing_quote)
   return existing_quote
+  
+@app.delete("/quotes/{quote_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_quote(quote_id: int, db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(QuoteModel).where(QuoteModel.id == quote_id))
+  quote = result.scalars().first()
+  
+  if not quote:
+    raise HTTPException(status_code=404, detail="Quote not found")
+
+  await db.delete(quote)
+  await db.commit()
+  return {"detail": "Quote deleted successfully"}
   
