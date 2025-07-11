@@ -4,6 +4,10 @@ import json
 
 st.title("SmartQuote")
 
+pg = st.navigation([st.Page("create_quote.py"), st.Page("all_quotes.py")])
+
+pg.run()
+
 with st.spinner():
   response = requests.get("http://127.0.0.1:8000/quotes")
   if response.status_code == 200:
