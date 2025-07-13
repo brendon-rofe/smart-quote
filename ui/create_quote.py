@@ -15,10 +15,12 @@ with st.form("create_quote_form"):
       "description": description,
       "price": price,
     }
-    response = requests.post(
-      "http://127.0.0.1:8000/quotes",
-      json = data
-    )
+    with st.spinner("Creating quote..."):
+      response = requests.post(
+        "http://127.0.0.1:8000/quotes",
+        json = data
+      )
     if response.status_code == 200:
       st.success("Quote created!")
-    
+    else:
+      st.error("Failed to create quote")
