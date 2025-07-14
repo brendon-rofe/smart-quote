@@ -12,10 +12,12 @@ with st.spinner():
       st.header(f"Customer: {quote["customer"]}")
       st.write(f"Description: {quote["description"]}")
       st.write(f"Price: {quote["price"]}")
-      col1, col2, _ = st.columns([1, 1, 3])
       
-      with col1:
-        st.button("Edit Quote", key=f"button1_{i}")
+      if st.button("Edit Quote", key=f"button1_{i}"):
+        with st.form("edit_quote_form"):
+          customer = st.text_input("Enter customer", value=f"{quote["customer"]}")
+          description =  st.text_area("Enter description", value=f"{quote["description"]}")
+          price = st.number_input("Enter a price", value=quote["price"])
+          submit = st.form_submit_button("Apply Changes")
 
-      with col2:
-          st.button("Delete Quote", type="primary", key=f"button2_{i}")
+      st.button("Delete Quote", type="primary", key=f"button2_{i}")
