@@ -2,7 +2,12 @@ import streamlit as st
 import requests
 import time
 
-st.header("All Quotes:")
+col_all, col_refresh = st.columns(2)
+col_all.header("All Quotes:")
+if col_refresh.button("Refresh Quotes"):
+  with st.spinner("Refreshing quotes..."):
+    time.sleep(3)
+    st.rerun()
 
 if "editing_quote" not in st.session_state:
   st.session_state.editing_quote = None
