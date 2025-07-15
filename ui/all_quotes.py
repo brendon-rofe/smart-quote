@@ -7,6 +7,9 @@ st.header("All Quotes:")
 if "editing_quote" not in st.session_state:
   st.session_state.editing_quote = None
 
+if "deleting_quote" not in st.session_state:
+  st.session_state.deleting_quote = None
+
 with st.spinner():
   response = requests.get("http://127.0.0.1:8000/quotes")
   if response.status_code == 200:
@@ -25,14 +28,25 @@ with st.spinner():
 
       with col2:
         if st.button("Delete Quote", type="primary", key=f"button2_{i}"):
-          with st.spinner("Deleting quote..."):
-            response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
-          if response.status_code == 204:
-            st.success("Quote deleted successfully!")
-            time.sleep(3)
+          st.session_state.deleting_quote = i
+        if st.session_state.deleting_quote == i:
+          st.warning("Are you sure you want to delete this quote?")
+          col_yes, col_no = st.columns(2)
+          yes = col_yes.button("Yes")
+          no = col_no.button("No")
+          if yes:
+            with st.spinner("Deleting quote..."):
+              response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
+            if response.status_code == 204:
+              st.success("Quote deleted successfully!")
+              time.sleep(3)
+              st.session_state.deleting_quote = None
+              st.rerun()
+            else:
+              st.error("Failed to delete quote")
+          if no:
+            st.session_state.deleting_quote = None
             st.rerun()
-          else:
-            st.error("Failed to delete quote")
 
       if st.session_state.editing_quote == i:
         with st.form(f"edit_quote_form_{i}"):
