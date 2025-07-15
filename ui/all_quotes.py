@@ -1,11 +1,17 @@
 import streamlit as st
 import requests
+import time
 
-st.header("All Quotes:")
+col_all, col_refresh = st.columns(2)
+col_all.header("All Quotes:")
+if col_refresh.button("Refresh Quotes"):
+  with st.spinner("Refreshing quotes..."):
+    time.sleep(3)
+    st.rerun()
 
 if "editing_quote" not in st.session_state:
   st.session_state.editing_quote = None
-  
+
 if "deleting_quote" not in st.session_state:
   st.session_state.deleting_quote = None
 
@@ -27,19 +33,35 @@ with st.spinner():
 
       with col2:
         if st.button("Delete Quote", type="primary", key=f"button2_{i}"):
-          with st.spinner("Deleting quote..."):
-            response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
-          if response.status_code == 204:
-            st.success("Quote deleted successfully!")
-          else:
-            st.error("Failed to delete quote")
+          st.session_state.deleting_quote = i
+        if st.session_state.deleting_quote == i:
+          st.warning("Are you sure you want to delete this quote?")
+          col_yes, col_no = st.columns(2)
+          yes = col_yes.button("Yes")
+          no = col_no.button("No")
+          if yes:
+            with st.spinner("Deleting quote..."):
+              response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
+            if response.status_code == 204:
+              st.success("Quote deleted successfully!")
+              time.sleep(3)
+              st.session_state.deleting_quote = None
+              st.rerun()
+            else:
+              st.error("Failed to delete quote")
+          if no:
+            st.session_state.deleting_quote = None
+            st.rerun()
 
       if st.session_state.editing_quote == i:
         with st.form(f"edit_quote_form_{i}"):
           customer = st.text_input("Enter customer", value=quote["customer"], key=f"customer_{i}")
           description = st.text_area("Enter description", value=quote["description"], key=f"description_{i}")
           price = st.number_input("Enter a price", value=quote["price"], key=f"price_{i}")
-          submit = st.form_submit_button("Apply Changes")
+
+          col1, col2 = st.columns(2)
+          submit = col1.form_submit_button("Apply Changes")
+          cancel = col2.form_submit_button("Cancel")
 
           if submit:
             data = {
@@ -55,5 +77,11 @@ with st.spinner():
             if response.status_code == 200:
               st.success("Quote updated successfully!")
               st.session_state.editing_quote = None
+              time.sleep(3)
+              st.rerun()
             else:
               st.error("Failed to update quote")
+          
+          if cancel:
+            st.session_state.editing_quote = None
+            st.rerun()
