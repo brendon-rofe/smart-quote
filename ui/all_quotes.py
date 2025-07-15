@@ -39,7 +39,10 @@ with st.spinner():
           customer = st.text_input("Enter customer", value=quote["customer"], key=f"customer_{i}")
           description = st.text_area("Enter description", value=quote["description"], key=f"description_{i}")
           price = st.number_input("Enter a price", value=quote["price"], key=f"price_{i}")
-          submit = st.form_submit_button("Apply Changes")
+
+          col1, col2 = st.columns(2)
+          submit = col1.form_submit_button("Apply Changes")
+          cancel = col2.form_submit_button("Cancel")
 
           if submit:
             data = {
@@ -57,3 +60,7 @@ with st.spinner():
               st.session_state.editing_quote = None
             else:
               st.error("Failed to update quote")
+          
+          if cancel:
+            st.session_state.editing_quote = None
+            st.rerun()
