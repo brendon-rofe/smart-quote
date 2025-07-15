@@ -58,6 +58,8 @@ with st.spinner():
             if response.status_code == 200:
               st.success("Quote updated successfully!")
               st.session_state.editing_quote = None
+              time.sleep(3)
+              st.rerun()
             else:
               st.error("Failed to update quote")
           
