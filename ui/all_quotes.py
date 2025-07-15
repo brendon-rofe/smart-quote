@@ -1,13 +1,11 @@
 import streamlit as st
 import requests
+import time
 
 st.header("All Quotes:")
 
 if "editing_quote" not in st.session_state:
   st.session_state.editing_quote = None
-  
-if "deleting_quote" not in st.session_state:
-  st.session_state.deleting_quote = None
 
 with st.spinner():
   response = requests.get("http://127.0.0.1:8000/quotes")
@@ -31,6 +29,8 @@ with st.spinner():
             response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
           if response.status_code == 204:
             st.success("Quote deleted successfully!")
+            time.sleep(3)
+            st.rerun()
           else:
             st.error("Failed to delete quote")
 
