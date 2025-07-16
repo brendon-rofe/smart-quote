@@ -33,6 +33,8 @@ async def create_quote(quote: QuoteCreate, db: AsyncSession = Depends(get_db)):
 async def get_all_quotes(db: AsyncSession = Depends(get_db)):
   result = await db.execute(select(QuoteModel))
   quotes = result.scalars().all()
+  if not quotes:
+    raise HTTPException(status_code=404, detail="No quotes found")
   return quotes
 
 @app.put("/quotes/{quote_id}")
