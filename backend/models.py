@@ -10,3 +10,11 @@ class QuoteModel(Base):
   customer = Column(String(255), index=True)
   description = Column(String(255), index=True)
   price = Column(Integer, index=True)
+
+class UserModel(Base):
+  __tablename__ = "users"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  username = Column(String(255), index=True)
+  email = Column(String(255), index=True)
+  password = Column(String(255), index=True)
