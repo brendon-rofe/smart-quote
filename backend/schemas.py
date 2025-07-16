@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Literal
 
 class QuoteCreate(BaseModel):
   customer: str
@@ -24,6 +25,7 @@ class User(BaseModel):
   username: str
   email: str
   password: str
+  role: Literal["Admin", "Customer"]
 
   class Config:
     orm_mode = True

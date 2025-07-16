@@ -5,8 +5,8 @@ from sqlalchemy import Enum
 import enum
 
 class UserRoleEnum(enum.Enum):
-  ADMIN = "Admin"
-  CUSTOMER = "Customer"
+  Admin = "Admin"
+  Customer = "Customer"
 
 Base = declarative_base()
 

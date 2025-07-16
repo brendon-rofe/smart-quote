@@ -28,7 +28,9 @@ def login():
     if login:
       response = requests.get(f"http://127.0.0.1:8000/users/{username}")
       user = response.json()
-      if password == user["password"]:
+      if role != user["role"]:
+        st.warning("Please select the correct role")
+      elif password == user["password"]:
         st.success("Login successful!")
         time.sleep(1)
         st.session_state.role = role
