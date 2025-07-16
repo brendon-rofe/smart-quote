@@ -60,7 +60,7 @@ account_pages = [logout_page, settings]
 customer_pages = [customer_request_quote_page, customer_quotes_page]
 admin_pages = [all_quotes_page, create_quote_page]
 
-st.title("Request manager")
+st.title("SmartQuote")
 
 page_dict = {}
 if st.session_state.role == "Customer":
