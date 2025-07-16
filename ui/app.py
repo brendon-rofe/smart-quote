@@ -14,23 +14,14 @@ def login():
     format_func=lambda r: "🛠️ Admin" if r == "Admin" else "👤 Customer"
   )
 
-  if role == "Customer":
-    with st.form("customer_login_form"):
-      username = st.text_input("Enter your username:")
-      password = st.text_input("Enter your password:")
-      login = st.form_submit_button("Login")
-      
-      if login:
-        st.session_state.role = role
-        st.rerun()
-  else:
-    with st.form("dmin_login_form"):
-      password = st.text_input("Enter your password:")
-      login = st.form_submit_button("Login")
-      
-      if login:
-        st.session_state.role = role
-        st.rerun()
+  with st.form("customer_login_form"):
+    username = st.text_input("Enter your username:")
+    password = st.text_input("Enter your password:")
+    login = st.form_submit_button("Login")
+    
+    if login:
+      st.session_state.role = role
+      st.rerun()
 
 def logout():
   st.session_state.role = None
