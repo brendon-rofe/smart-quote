@@ -9,14 +9,28 @@ def login():
 
   st.header("Log in")
   role = st.selectbox(
-    "Choose your role",
+    "Choose your role:",
     ROLES,
     format_func=lambda r: "🛠️ Admin" if r == "Admin" else "👤 Customer"
   )
 
-  if st.button("Log in"):
-    st.session_state.role = role
-    st.rerun()
+  if role == "Customer":
+    with st.form("customer_login_form"):
+      username = st.text_input("Enter your username:")
+      password = st.text_input("Enter your password:")
+      login = st.form_submit_button("Login")
+      
+      if login:
+        st.session_state.role = role
+        st.rerun()
+  else:
+    with st.form("dmin_login_form"):
+      password = st.text_input("Enter your password:")
+      login = st.form_submit_button("Login")
+      
+      if login:
+        st.session_state.role = role
+        st.rerun()
 
 def logout():
   st.session_state.role = None
