@@ -1,4 +1,6 @@
 import streamlit as st
+import requests
+import time
 
 if "role" not in st.session_state:
   st.session_state.role = None
@@ -16,12 +18,23 @@ def login():
 
   with st.form("customer_login_form"):
     username = st.text_input("Enter your username:")
+    if username == "":
+      st.warning("Please enter your username")
     password = st.text_input("Enter your password:")
+    if password == "":
+      st.warning("Please enter your password")
     login = st.form_submit_button("Login")
     
     if login:
-      st.session_state.role = role
-      st.rerun()
+      response = requests.get(f"http://127.0.0.1:8000/users/{username}")
+      user = response.json()
+      if password == user["password"]:
+        st.success("Login successful!")
+        time.sleep(1)
+        st.session_state.role = role
+        st.rerun()
+      else:
+        st.error("Incorrect username or password")
 
 def logout():
   st.session_state.role = None
