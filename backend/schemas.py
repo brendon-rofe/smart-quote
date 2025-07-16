@@ -18,3 +18,12 @@ class QuoteUpdate(BaseModel):
   customer: str | None = None
   description: str | None = None
   price: int | None = None
+
+class User(BaseModel):
+  id: int
+  username = str
+  email = str
+  password = str
+
+  class Config:
+    orm_mode = True
