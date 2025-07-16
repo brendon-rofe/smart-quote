@@ -17,6 +17,8 @@ if "deleting_quote" not in st.session_state:
 
 with st.spinner():
   response = requests.get("http://127.0.0.1:8000/quotes")
+  if response.status_code == 404:
+    st.warning("🤷‍♂️ There doesn't seem to be any quotes at the moment...")
   if response.status_code == 200:
     quotes = response.json()
     for i, quote in enumerate(quotes):
