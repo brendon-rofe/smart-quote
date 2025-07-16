@@ -6,8 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import get_db, engine
-from schemas import Quote, QuoteCreate, QuoteUpdate
-from models import Base, QuoteModel
+from schemas import Quote, QuoteCreate, QuoteUpdate, User
+from models import Base, QuoteModel, UserModel
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -67,4 +67,11 @@ async def delete_quote(quote_id: int, db: AsyncSession = Depends(get_db)):
   await db.delete(quote)
   await db.commit()
   return {"detail": "Quote deleted successfully"}
-  
+
+@app.get("/users/{username}")
+async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(UserModel).where(UserModel.username == username))
+  user = result.scalars().first()
+  if not user:
+    raise HTTPException(status_code=404, detail="User with that username not found")
+  return user

@@ -21,9 +21,9 @@ class QuoteUpdate(BaseModel):
 
 class User(BaseModel):
   id: int
-  username = str
-  email = str
-  password = str
+  username: str
+  email: str
+  password: str
 
   class Config:
     orm_mode = True
