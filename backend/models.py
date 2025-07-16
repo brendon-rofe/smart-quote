@@ -7,6 +7,6 @@ class QuoteModel(Base):
   __tablename__ = "quotes"
   
   id = Column(Integer, primary_key=True, index=True)
-  customer = Column(String, index=True)
-  description = Column(String, index=True)
+  customer = Column(String(255), index=True)
+  description = Column(String(255), index=True)
   price = Column(Integer, index=True)
