@@ -6,7 +6,7 @@ col_all, col_refresh = st.columns(2)
 col_all.header("All Quotes:")
 if col_refresh.button("Refresh Quotes"):
   with st.spinner("Refreshing quotes..."):
-    time.sleep(3)
+    time.sleep(1)
     st.rerun()
 
 if "editing_quote" not in st.session_state:
@@ -46,7 +46,7 @@ with st.spinner():
               response = requests.delete(f"http://127.0.0.1:8000/quotes/{quote['id']}")
             if response.status_code == 204:
               st.success("Quote deleted successfully!")
-              time.sleep(3)
+              time.sleep(1)
               st.session_state.deleting_quote = None
               st.rerun()
             else:
@@ -79,7 +79,7 @@ with st.spinner():
             if response.status_code == 200:
               st.success("Quote updated successfully!")
               st.session_state.editing_quote = None
-              time.sleep(3)
+              time.sleep(1)
               st.rerun()
             else:
               st.error("Failed to update quote")
