@@ -18,25 +18,28 @@ def login():
 
   with st.form("customer_login_form"):
     username = st.text_input("Enter your username:")
-    if username == "":
-      st.warning("Please enter your username")
     password = st.text_input("Enter your password:")
-    if password == "":
-      st.warning("Please enter your password")
     login = st.form_submit_button("Login")
     
     if login:
-      response = requests.get(f"http://127.0.0.1:8000/users/{username}")
-      user = response.json()
-      if role != user["role"]:
-        st.warning("Please select the correct role")
-      elif password == user["password"]:
-        st.success("Login successful!")
-        time.sleep(1)
-        st.session_state.role = role
-        st.rerun()
+      if username == "" and password == "":
+        st.warning("Please enter your username and password")
+      elif username == "":
+        st.warning("Please enter your username")
+      elif password == "":
+        st.warning("Please enter your password")
       else:
-        st.error("Incorrect username or password")
+        response = requests.get(f"http://127.0.0.1:8000/users/{username}")
+        user = response.json()
+        if role != user["role"]:
+          st.warning("Please select the correct role")
+        elif password == user["password"]:
+          st.success("Login successful!")
+          time.sleep(1)
+          st.session_state.role = role
+          st.rerun()
+        else:
+          st.error("Incorrect username or password")
 
 def logout():
   st.session_state.role = None
