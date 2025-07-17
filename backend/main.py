@@ -9,6 +9,12 @@ from database import get_db, engine
 from schemas import Quote, QuoteCreate, QuoteUpdate, User
 from models import Base, QuoteModel, UserModel
 
+from pydantic import BaseModel
+from agent import prompt_llm
+
+class Prompt(BaseModel):
+  prompt: str
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
   async with engine.begin() as connection:
@@ -75,3 +81,8 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
   if not user:
     raise HTTPException(status_code=404, detail="User with that username not found")
   return user
+
+@app.post("/agent")
+def prompt_agent(PromptObj: Prompt):
+  result = prompt_llm(PromptObj.prompt)
+  return result.content
