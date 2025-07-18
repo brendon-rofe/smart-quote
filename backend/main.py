@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 from contextlib import asynccontextmanager
 from typing import List
 
@@ -83,6 +84,6 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
   return user
 
 @app.post("/agent")
-def prompt_agent(PromptObj: Prompt):
-  result = prompt_llm(PromptObj.prompt)
-  return result.content
+async def prompt_agent(PromptObj: Prompt):
+  response = StreamingResponse(prompt_llm(PromptObj.prompt), media_type="text/event-stream")
+  return response
