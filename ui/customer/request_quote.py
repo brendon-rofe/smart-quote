@@ -2,12 +2,14 @@ import streamlit as st
 import requests
 
 def response_generator(prompt):
-  data = {"prompt": prompt}
-  response = requests.post(
-    "http://127.0.0.1:8000/agent",
-    json = data,
-  ).json()
-  return response
+  with st.spinner("Thinking..."):
+    data = {"prompt": prompt}
+    response = requests.post(
+      "http://127.0.0.1:8000/agent",
+      json = data,
+    )
+    if response.status_code == 200:
+      return response.json()
 
 if "messages" not in st.session_state:
   st.session_state.messages = []
