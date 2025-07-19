@@ -7,10 +7,9 @@ load_dotenv()
 
 llm = ChatGoogleGenerativeAI(
   model="gemini-2.0-flash",
-  google_api_key=os.getenv("GOOGLE_API_KEY"),
-  streaming=True
+  google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
 async def prompt_llm(prompt: str):
-  async for chunk in llm.astream([HumanMessage(content=prompt)]):
-    yield f"data: {chunk.content}\n\n"
+  response = await llm.ainvoke([HumanMessage(content=prompt)])
+  return response.content

@@ -85,5 +85,5 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
 
 @app.post("/agent")
 async def prompt_agent(PromptObj: Prompt):
-  response = StreamingResponse(prompt_llm(PromptObj.prompt), media_type="text/event-stream")
+  response = await prompt_llm(PromptObj.prompt)
   return response
