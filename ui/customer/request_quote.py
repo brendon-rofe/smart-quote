@@ -13,7 +13,6 @@ def response_generator(prompt):
     else:
       return "Error: Failed to get response."
 
-# Initialize chat history
 if "messages" not in st.session_state:
   st.session_state.messages = []
 
