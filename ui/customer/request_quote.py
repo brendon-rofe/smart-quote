@@ -6,11 +6,14 @@ def response_generator(prompt):
     data = {"prompt": prompt}
     response = requests.post(
       "http://127.0.0.1:8000/agent",
-      json = data,
+      json=data,
     )
     if response.status_code == 200:
-      return response.json()
+      return response.json()["response"]
+    else:
+      return "Error: Failed to get response."
 
+# Initialize chat history
 if "messages" not in st.session_state:
   st.session_state.messages = []
 
@@ -23,6 +26,8 @@ if prompt := st.chat_input("What is up?"):
   with st.chat_message("user"):
     st.markdown(prompt)
 
+  assistant_reply = response_generator(prompt)
+
   with st.chat_message("assistant"):
-    response = st.write(response_generator(prompt))
-  st.session_state.messages.append({"role": "assistant", "content": response})
+    st.markdown(assistant_reply)
+  st.session_state.messages.append({"role": "assistant", "content": assistant_reply})
