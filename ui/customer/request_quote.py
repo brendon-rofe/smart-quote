@@ -9,7 +9,7 @@ def response_generator(prompt):
       json=data,
     )
     if response.status_code == 200:
-      return response.json()["response"]
+      return response.json()
     else:
       return "Error: Failed to get response."
 
