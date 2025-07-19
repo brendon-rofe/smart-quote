@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import StreamingResponse
 from contextlib import asynccontextmanager
 from typing import List
 
@@ -8,6 +9,12 @@ from sqlalchemy.future import select
 from database import get_db, engine
 from schemas import Quote, QuoteCreate, QuoteUpdate, User
 from models import Base, QuoteModel, UserModel
+
+from pydantic import BaseModel
+from agent import prompt_llm
+
+class Prompt(BaseModel):
+  prompt: str
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -75,3 +82,8 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
   if not user:
     raise HTTPException(status_code=404, detail="User with that username not found")
   return user
+
+@app.post("/agent")
+async def prompt_agent(PromptObj: Prompt):
+  response = await prompt_llm(PromptObj.prompt)
+  return response
