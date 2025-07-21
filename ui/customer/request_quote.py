@@ -52,7 +52,6 @@ for message in st.session_state.messages:
     if message["role"] == "assistant":
       json_data = extract_json(message["content"])
       if json_data:
-        print(json_data)
         st.markdown("**Here is your quote:**")
         st.write(f"Customer: {json_data.get('customer', '')}")
         st.write(f"Description: {json_data.get('description', '')}")
