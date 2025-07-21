@@ -10,22 +10,17 @@ system_instructions = SystemMessage(content="""
   First, ask the customer these:
   1. Name
   2. Service needed
-  3. Deadline
   4. Special requests
 
-  When you provide a quote, respond with:
-
-  "Here is your quote:"
-
-  and a JSON object like this:
+  When you provide a quote, respond with a JSON object like this:
 
   {
     "customer": "John Doe",
-    "service": "Custom web development",
-    "deadline": "2025-08-01",
-    "special_requests": "Include mobile version",
-    "price": "$2500"
+    "description": "Custom web development",
+    "price": "2500"
   }
+
+  Place the services needed and any special requests into the description
 
   If you are still collecting info, just reply with your next question
 """)

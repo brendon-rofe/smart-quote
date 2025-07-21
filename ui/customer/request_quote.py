@@ -24,6 +24,22 @@ def response_generator(messages):
   else:
     return "Error: Failed to get response."
 
+def send_quote_to_backend(quote_data):
+  payload = {
+    "customer": quote_data.get("customer"),
+    "description": quote_data.get("description"),
+    "price": quote_data.get("price").replace("$", "").strip()  # clean up $ sign
+  }
+  response = requests.post(
+    "http://127.0.0.1:8000/quotes",
+    json=payload,
+  )
+  if response.status_code == 200:
+    st.success("✅ Your quote has been saved!")
+  else:
+    st.error(f"❌ Failed to save quote: {response.text}")
+
+
 if "messages" not in st.session_state:
   st.session_state.messages = []
   st.session_state.messages.append({
@@ -36,12 +52,14 @@ for message in st.session_state.messages:
     if message["role"] == "assistant":
       json_data = extract_json(message["content"])
       if json_data:
+        print(json_data)
         st.markdown("**Here is your quote:**")
         st.write(f"Customer: {json_data.get('customer', '')}")
-        st.write(f"Service: {json_data.get('service', '')}")
-        st.write(f"Deadline: {json_data.get('deadline', '')}")
-        st.write(f"Special Requests: {json_data.get('special_requests', '')}")
+        st.write(f"Description: {json_data.get('description', '')}")
         st.write(f"Price: {json_data.get('price', '')}")
+        
+        if all(k in json_data for k in ["customer", "description", "price"]):
+          send_quote_to_backend(json_data)
       else:
         st.markdown(message["content"])
     else:
@@ -60,9 +78,7 @@ if prompt := st.chat_input("How can I help you?"):
     if json_data:
       st.markdown("**Here is your quote:**")
       st.write(f"Customer: {json_data.get('customer', '')}")
-      st.write(f"Service: {json_data.get('service', '')}")
-      st.write(f"Deadline: {json_data.get('deadline', '')}")
-      st.write(f"Special Requests: {json_data.get('special_requests', '')}")
+      st.write(f"Description: {json_data.get('description', '')}")
       st.write(f"Price: {json_data.get('price', '')}")
 
     else:
