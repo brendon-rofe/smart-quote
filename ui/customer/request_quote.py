@@ -15,12 +15,16 @@ def response_generator(prompt):
 
 if "messages" not in st.session_state:
   st.session_state.messages = []
+  st.session_state.messages.append({
+      "role": "assistant",
+      "content": "Hi! I'm SmartQuote 🤖. Let's create a software services quote! What's the customer's name?"
+  })
 
 for message in st.session_state.messages:
   with st.chat_message(message["role"]):
     st.markdown(message["content"])
 
-if prompt := st.chat_input("What is up?"):
+if prompt := st.chat_input("How can I help you?"):
   st.session_state.messages.append({"role": "user", "content": prompt})
   with st.chat_message("user"):
     st.markdown(prompt)
