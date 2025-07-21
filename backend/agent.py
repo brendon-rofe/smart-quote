@@ -13,7 +13,11 @@ system_instructions = SystemMessage(content="""
   3. Deadline
   4. Special requests
 
-  When you provide a quote, respond as a JSON object like this:
+  When you provide a quote, respond with:
+
+  "Here is your quote:"
+
+  and a JSON object like this:
 
   {
     "customer": "John Doe",
