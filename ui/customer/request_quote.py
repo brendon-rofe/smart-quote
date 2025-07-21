@@ -1,17 +1,16 @@
 import streamlit as st
 import requests
 
-def response_generator(prompt):
-  with st.spinner("Thinking..."):
-    data = {"prompt": prompt}
-    response = requests.post(
-      "http://127.0.0.1:8000/agent",
-      json=data,
-    )
-    if response.status_code == 200:
-      return response.json()
-    else:
-      return "Error: Failed to get response."
+def response_generator(messages):
+  data = {"messages": messages}
+  response = requests.post(
+    "http://127.0.0.1:8000/agent",
+    json=data,
+  )
+  if response.status_code == 200:
+    return response.json()
+  else:
+    return "Error: Failed to get response."
 
 if "messages" not in st.session_state:
   st.session_state.messages = []
@@ -29,7 +28,7 @@ if prompt := st.chat_input("How can I help you?"):
   with st.chat_message("user"):
     st.markdown(prompt)
 
-  assistant_reply = response_generator(prompt)
+  assistant_reply = response_generator(st.session_state.messages)
 
   with st.chat_message("assistant"):
     st.markdown(assistant_reply)

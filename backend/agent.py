@@ -27,7 +27,8 @@ llm = ChatGoogleGenerativeAI(
   google_api_key=os.getenv("GOOGLE_API_KEY")
 )
 
-async def prompt_llm(prompt: str):
-  messages = [system_instructions, HumanMessage(content=prompt)]
-  response = await llm.ainvoke(messages)
+async def prompt_llm(messages):
+  full_messages = [system_instructions] + messages
+  response = await llm.ainvoke(full_messages)
   return response.content
+

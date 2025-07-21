@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from contextlib import asynccontextmanager
 from typing import List
+from langchain_core.messages import HumanMessage, AIMessage
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -13,8 +14,12 @@ from models import Base, QuoteModel, UserModel
 from pydantic import BaseModel
 from agent import prompt_llm
 
-class Prompt(BaseModel):
-  prompt: str
+class Message(BaseModel):
+  role: str
+  content: str
+
+class Conversation(BaseModel):
+  messages: list[Message]
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -84,6 +89,13 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
   return user
 
 @app.post("/agent")
-async def prompt_agent(PromptObj: Prompt):
-  response = await prompt_llm(PromptObj.prompt)
+async def prompt_agent(conversation: Conversation):
+  chat_history = []
+  for msg in conversation.messages:
+    if msg.role == "user":
+      chat_history.append(HumanMessage(content=msg.content))
+    else:
+      chat_history.append(AIMessage(content=msg.content))
+
+  response = await prompt_llm(chat_history)
   return response
