@@ -64,10 +64,11 @@ all_quotes_page = st.Page(
   default=(role == "Admin"), icon=":material/list:"
 )
 create_quote_page = st.Page("admin/create_quote.py", title="Create Quote", icon=":material/edit:")
+custom_instructions_page = st.Page("admin/custom_instructions.py", title="Set Custom Instructions", icon=":material/tune:")
 
 account_pages = [logout_page, settings]
 customer_pages = [customer_request_quote_page, customer_quotes_page]
-admin_pages = [all_quotes_page, create_quote_page]
+admin_pages = [all_quotes_page, create_quote_page, custom_instructions_page]
 
 page_dict = {}
 if st.session_state.role == "Customer":
