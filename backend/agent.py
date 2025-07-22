@@ -36,4 +36,3 @@ async def prompt_llm(messages):
   full_messages = [system_instructions] + messages
   response = await llm.ainvoke(full_messages)
   return response.content
-

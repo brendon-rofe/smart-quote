@@ -139,7 +139,7 @@ async def upload_pdf(pdf_file: UploadFile = File(...), db: AsyncSession = Depend
   result = await db.execute(select(CustomDataModel))
   entry = result.scalar_one_or_none()
   if not entry:
-      raise HTTPException(status_code=404, detail="Custom data entry not found")
+    raise HTTPException(status_code=404, detail="Custom data entry not found")
 
   pdf_content = await pdf_file.read()
   entry.pdf_file = pdf_content
