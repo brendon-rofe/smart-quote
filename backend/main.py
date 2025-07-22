@@ -108,3 +108,9 @@ async def add_custom_instructions(custom_instructions: CustomInstructions, db: A
   await db.commit()
   await db.refresh(new_custom_instructions)
   return new_custom_instructions
+
+@app.get("/custom-instructions")
+async def get_custom_instructions(db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(CustomInstructionsModel))
+  custom_instructions = result.scalars().first()
+  return custom_instructions
