@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import HumanMessage
 from langchain_core.messages import SystemMessage
 
 system_instructions = SystemMessage(content="""
