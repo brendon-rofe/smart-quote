@@ -29,3 +29,6 @@ class User(BaseModel):
 
   class Config:
     from_attributes  = True
+
+class CustomInstructions(BaseModel):
+  custom_instructions: str

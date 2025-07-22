@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import get_db, engine
-from schemas import Quote, QuoteCreate, QuoteUpdate
-from models import Base, QuoteModel, UserModel
+from schemas import Quote, QuoteCreate, QuoteUpdate, CustomInstructions
+from models import Base, QuoteModel, UserModel, CustomInstructionsModel
 
 from pydantic import BaseModel
 from agent import prompt_llm
@@ -98,3 +98,13 @@ async def prompt_agent(conversation: Conversation):
 
   response = await prompt_llm(chat_history)
   return response
+
+@app.post("/custom-instructions")
+async def add_custom_instructions(custom_instructions: CustomInstructions, db: AsyncSession = Depends(get_db)):
+  new_custom_instructions = CustomInstructionsModel(
+    custom_instructions = custom_instructions.custom_instructions
+  )
+  db.add(new_custom_instructions)
+  await db.commit()
+  await db.refresh(new_custom_instructions)
+  return new_custom_instructions
