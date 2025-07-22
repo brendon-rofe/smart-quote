@@ -1,5 +1,4 @@
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.responses import StreamingResponse
 from contextlib import asynccontextmanager
 from typing import List
 from langchain_core.messages import HumanMessage, AIMessage
@@ -8,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import get_db, engine
-from schemas import Quote, QuoteCreate, QuoteUpdate, User
+from schemas import Quote, QuoteCreate, QuoteUpdate
 from models import Base, QuoteModel, UserModel
 
 from pydantic import BaseModel

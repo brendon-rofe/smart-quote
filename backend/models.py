@@ -26,3 +26,9 @@ class UserModel(Base):
   email = Column(String(255))
   password = Column(String(255))
   role = Column(Enum(UserRoleEnum), nullable=False)
+
+class CustomInstructionsModel(Base):
+  __tablename__ = "custom_instructions"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  custom_instructions = Column(String(255))
