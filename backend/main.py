@@ -1,14 +1,22 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File
 from contextlib import asynccontextmanager
 from typing import List
 from langchain_core.messages import HumanMessage, AIMessage
+import base64
+import io
+from PyPDF2 import PdfReader
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
 from database import get_db, engine
-from schemas import Quote, QuoteCreate, QuoteUpdate, CustomInstructions
-from models import Base, QuoteModel, UserModel, CustomInstructionsModel
+from schemas import (
+    Quote,
+    QuoteCreate,
+    QuoteUpdate,
+    CustomInstructionsCreate,
+  )
+from models import Base, QuoteModel, UserModel, CustomDataModel
 
 from pydantic import BaseModel
 from agent import prompt_llm
@@ -19,6 +27,23 @@ class Message(BaseModel):
 
 class Conversation(BaseModel):
   messages: list[Message]
+
+def extract_text_from_base64_pdf(base64_string: str) -> str:
+  try:
+    pdf_bytes = base64.b64decode(base64_string)
+
+    reader = PdfReader(io.BytesIO(pdf_bytes))
+    extracted_text = ""
+    for page in reader.pages:
+      page_text = page.extract_text()
+      if page_text:
+        extracted_text += page_text + "\n"
+
+    return extracted_text.strip()
+
+  except Exception as e:
+    print(f"Error extracting PDF text: {e}")
+    return ""
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -99,18 +124,43 @@ async def prompt_agent(conversation: Conversation):
   response = await prompt_llm(chat_history)
   return response
 
-@app.post("/custom-instructions")
-async def add_custom_instructions(custom_instructions: CustomInstructions, db: AsyncSession = Depends(get_db)):
-  new_custom_instructions = CustomInstructionsModel(
-    custom_instructions = custom_instructions.custom_instructions
+@app.post("/custom-data/instructions")
+async def add_custom_instructions(custom_data: CustomInstructionsCreate, db: AsyncSession = Depends(get_db)):
+  new_custom_instructions = CustomDataModel(
+    custom_instructions = custom_data.custom_instructions,
   )
   db.add(new_custom_instructions)
   await db.commit()
   await db.refresh(new_custom_instructions)
   return new_custom_instructions
 
-@app.get("/custom-instructions")
-async def get_custom_instructions(db: AsyncSession = Depends(get_db)):
-  result = await db.execute(select(CustomInstructionsModel))
-  custom_instructions = result.scalars().first()
-  return custom_instructions
+@app.post("/custom-data/upload-pdf")
+async def upload_pdf(pdf_file: UploadFile = File(...), db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(CustomDataModel))
+  entry = result.scalar_one_or_none()
+  if not entry:
+      raise HTTPException(status_code=404, detail="Custom data entry not found")
+
+  pdf_content = await pdf_file.read()
+  entry.pdf_file = pdf_content
+
+  await db.commit()
+  await db.refresh(entry)
+
+  return {"message": "PDF uploaded successfully"}
+
+@app.get("/custom-data")
+async def get_custom_data(db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(CustomDataModel))
+  entry = result.scalar_one_or_none()
+  if not entry:
+    raise HTTPException(status_code=404, detail="Custom data not found")
+  pdf_base64 = base64.b64encode(entry.pdf_file).decode('utf-8') if entry.pdf_file else None
+
+  pdf_text = extract_text_from_base64_pdf(pdf_base64)
+
+  return {
+    "id": entry.id,
+    "custom_instructions": entry.custom_instructions,
+    "pdf_text": pdf_text
+  }

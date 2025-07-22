@@ -30,9 +30,5 @@ class User(BaseModel):
   class Config:
     from_attributes  = True
 
-class CustomInstructions(BaseModel):
-  id: int | None
-  custom_instructions: str
-  
-  class Config:
-    from_attributes  = True
+class CustomInstructionsCreate(BaseModel):
+  custom_instructions: str | None
