@@ -38,11 +38,11 @@ async def prompt_llm(messages):
 
     When you provide a quote, respond with a JSON object like this:
 
-    {
+    {{
       "customer": "John Doe",
       "description": "Custom web development",
       "price": "2500"
-    }
+    }}
 
     Place the services needed and any special requests into the description.
 
