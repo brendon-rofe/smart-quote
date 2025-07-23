@@ -13,7 +13,7 @@ class Quote(BaseModel):
   price: int
 
   class Config:
-    orm_mode = True
+    from_attributes  = True
 
 class QuoteUpdate(BaseModel):
   customer: str | None = None
@@ -28,4 +28,7 @@ class User(BaseModel):
   role: Literal["Admin", "Customer"]
 
   class Config:
-    orm_mode = True
+    from_attributes  = True
+
+class CustomInstructionsCreate(BaseModel):
+  custom_instructions: str | None

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, LargeBinary, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Enum
 
@@ -26,3 +26,10 @@ class UserModel(Base):
   email = Column(String(255))
   password = Column(String(255))
   role = Column(Enum(UserRoleEnum), nullable=False)
+
+class CustomDataModel(Base):
+  __tablename__ = "custom_data"
+  
+  id = Column(Integer, primary_key=True, index=True)
+  custom_instructions = Column(String(255))
+  pdf_file = Column(LargeBinary)
