@@ -73,6 +73,14 @@ async def get_all_quotes(db: AsyncSession = Depends(get_db)):
     raise HTTPException(status_code=404, detail="No quotes found")
   return quotes
 
+@app.get("/quotes/{customer}", response_model=List[Quote])
+async def get_all_customer_quotes(customer: str, db: AsyncSession = Depends(get_db)):
+  result = await db.execute(select(QuoteModel).where(QuoteModel.customer == customer))
+  quotes = result.scalars().all()
+  if not quotes:
+    raise HTTPException(status_code=404, detail="No quotes for this customer found")
+  return quotes
+
 @app.put("/quotes/{quote_id}")
 async def update_quote(quote_id: int, quote: QuoteUpdate, db: AsyncSession = Depends(get_db)):
   result = await db.execute(select(QuoteModel).where(QuoteModel.id == quote_id))
