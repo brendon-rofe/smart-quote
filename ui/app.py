@@ -5,6 +5,9 @@ import time
 if "role" not in st.session_state:
   st.session_state.role = None
 
+if "customer_name" not in st.session_state:
+  st.session_state.customer_name = None
+
 ROLES = ["Customer", "Admin"]
 
 def login():
@@ -34,6 +37,7 @@ def login():
         if role != user["role"]:
           st.warning("Please select the correct role")
         elif password == user["password"]:
+          st.session_state.customer_name = username
           st.success("Login successful!")
           time.sleep(1)
           st.session_state.role = role
