@@ -9,7 +9,6 @@ def display_all_customer_quotes(customer_name):
     st.warning("🤷‍♂️ You don't seem to be any quotes at the moment...")
   if response.status_code == 200:
     customer_quotes = response.json()
-    print("Customer quotes:", customer_quotes)
     for quote in customer_quotes:
       st.divider()
       st.write(f"Description: {quote['description']}")
