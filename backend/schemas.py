@@ -6,6 +6,13 @@ class QuoteCreate(BaseModel):
   description: str
   price: int
 
+#  TODO change role to enum
+class UserCreate(BaseModel):
+  username: str
+  email: str
+  password: str
+  role: str
+
 class Quote(BaseModel):
   id: int
   customer: str
