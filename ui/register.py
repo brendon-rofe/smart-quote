@@ -17,13 +17,11 @@ with st.form("registration_form"):
       "password": user_password,
       "role": user_role
     }
-    
-    with st.spinner("Creating quote..."):
-      response = requests.post(
-        "http://127.0.0.1:8000/users",
-        json = data
-      )
+    response = requests.post(
+      "http://127.0.0.1:8000/users",
+      json = data
+    )
     if response.status_code == 200:
-      st.success("You have been successfully registered!")
+      st.success("You have successfully been registered!")
     else:
       st.error("Failed to register")
