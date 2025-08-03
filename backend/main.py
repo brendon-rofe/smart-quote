@@ -15,6 +15,7 @@ from schemas import (
     QuoteCreate,
     QuoteUpdate,
     CustomInstructionsCreate,
+    UserCreate
   )
 from models import Base, QuoteModel, UserModel, CustomDataModel
 
@@ -119,6 +120,19 @@ async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)
   if not user:
     raise HTTPException(status_code=404, detail="User with that username not found")
   return user
+
+@app.post("/users")
+async def create_user(user: UserCreate, db: AsyncSession = Depends(get_db)):
+  new_user = UserModel(
+    username = user.username,
+    email = user.email,
+    password = user.password,
+    role = user.role
+  )
+  db.add(new_user)
+  await db.commit()
+  await db.refresh(new_user)
+  return new_user
 
 @app.post("/agent")
 async def prompt_agent(conversation: Conversation):
