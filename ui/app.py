@@ -70,9 +70,12 @@ all_quotes_page = st.Page(
 create_quote_page = st.Page("admin/create_quote.py", title="Create Quote", icon=":material/edit:")
 custom_instructions_page = st.Page("admin/custom_instructions.py", title="Set Custom Instructions", icon=":material/tune:")
 
+customer_register_page = st.Page("customer/customer_register.py", title="Register", icon=":material/person_add:")
+admin_register_page = st.Page("admin/admin_register.py", title="Register New Admin", icon=":material/person_add:")
+
 account_pages = [logout_page, settings]
 customer_pages = [customer_request_quote_page, customer_quotes_page]
-admin_pages = [all_quotes_page, create_quote_page, custom_instructions_page]
+admin_pages = [all_quotes_page, create_quote_page, custom_instructions_page, admin_register_page]
 
 page_dict = {}
 if st.session_state.role == "Customer":
@@ -83,6 +86,6 @@ if st.session_state.role == "Admin":
 if len(page_dict) > 0:
   pg = st.navigation({"Account": account_pages} | page_dict)
 else:
-  pg = st.navigation([st.Page(login)])
+  pg = st.navigation([customer_register_page, st.Page(login)])
 
 pg.run()
