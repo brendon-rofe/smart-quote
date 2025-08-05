@@ -86,6 +86,6 @@ if st.session_state.role == "Admin":
 if len(page_dict) > 0:
   pg = st.navigation({"Account": account_pages} | page_dict)
 else:
-  pg = st.navigation([customer_register_page, st.Page(login)])
+  pg = st.navigation([customer_register_page, st.Page(login, title="Login", icon=":material/login:")])
 
 pg.run()
